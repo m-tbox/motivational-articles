@@ -1,7 +1,8 @@
 import styled from "styled-components"
 
 type Props = {
-    primary?: boolean
+    primary?: boolean,
+    type?: "button" | "submit" | "reset" | undefined
 }
 
 export const Container = styled.button<Props>`

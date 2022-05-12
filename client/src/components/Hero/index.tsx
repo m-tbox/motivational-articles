@@ -7,57 +7,102 @@ import ModalComponent from "../Modal";
 const Hero = () => {
     const [showSignUpModal, setShowSignupModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [validated, setValidated] = useState(false);
 
-    const handleSignup = (e: any) => {
-        e.preventDefault();
+    const handleSignup = (event: any) => {
+        event.preventDefault();
 
-        alert(3)
+        const form = event.currentTarget;
+        
+        if (form.checkValidity() === false && !showLoginModal) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        else {
+            alert(3);
+        }
+
+        setValidated(true);
     }
 
-    const handleLogin = (e: any) => {
-        e.preventDefault();
+    const handleLogin = (event: any) => {
+        event.preventDefault();
 
-        alert(1)
+        const form = event.currentTarget;
+        
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        else {
+            alert(1);
+        }
+
+        setValidated(true);
     }
 
     const openSignupModal = () => {
+        setValidated(false);
         setShowSignupModal(true);
     }
 
     const openLoginModal = () => {
+        setValidated(false);
         setShowLoginModal(true);
     }
 
     const closeModal = () => {
+        setValidated(false);
         setShowSignupModal(false);
         setShowLoginModal(false);
     }
 
-    const renderModal = (show: boolean, title: string, onHideModal: () => void, handleAction: React.MouseEventHandler<HTMLButtonElement>) => (
+    const renderModal = (show: boolean, title: string, onHideModal: () => void, handleAction: any) => (
         <ModalComponent
             showMoal={show}
             handleModalHide={onHideModal}
             title={title}
-            handleAuthAction={handleAction}
         >
-            <Form>
-                <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
-                    <Form.Label column sm="2">
-                        Email
-                    </Form.Label>
-                    <Col sm="10">
-                        <Form.Control type="email" />
-                    </Col>
-                </Form.Group>
+            <Form noValidate validated={validated} onSubmit={handleAction}>
+                <Row className="mb-3">
+                    <Form.Group as={Col}>
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control
+                            required
+                            type="email"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Please provide valid email
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
+                <Row className="mb-3">
+                    <Form.Group as={Col}>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            required
+                            type="password"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            This field is mandatory
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
 
-                <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
-                    <Form.Label column sm="2">
-                        Password
-                    </Form.Label>
-                    <Col sm="10">
-                        <Form.Control type="password" />
-                    </Col>
-                </Form.Group>
+                <Row className="mb-3">
+                    <Form.Group as={Col} className="d-flex justify-content-end">
+                        <Button
+                            title={"Close"}
+                            onClick={onHideModal}
+                            type="button"
+                        />
+                        <Button
+                            primary
+                            title={title}
+                            type="submit"
+                        />
+                    </Form.Group>
+                </Row>
             </Form>
         </ModalComponent>
     )
@@ -77,7 +122,7 @@ const Hero = () => {
                         onClick={openSignupModal}
                     />
 
-                    {renderModal(showSignUpModal, "Sign up" , closeModal, handleSignup)}
+                    {renderModal(showSignUpModal, "Sign up", closeModal, handleSignup)}
 
                     <Button
                         title={'Login'}
@@ -85,7 +130,7 @@ const Hero = () => {
                         primary
                     />
 
-                    {renderModal(showLoginModal, "Login" , closeModal, handleLogin)}
+                    {renderModal(showLoginModal, "Login", closeModal, handleLogin)}
 
                 </HeaderContainer>
             </Container>
