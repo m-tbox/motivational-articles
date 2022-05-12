@@ -45,7 +45,7 @@ router.post('/signup',
         })
 
         const token = await JWT.sign(
-            {email: newUser.email},
+            { email: newUser.email },
             process.env.JWT_SECRET as string,
             {
                 expiresIn: 360000
@@ -63,5 +63,56 @@ router.post('/signup',
             }
         })
     })
+
+
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.json({
+            errors: [
+                {
+                    msg: "Invalid credentials"
+                }
+            ],
+            data: null
+        })
+    }
+
+    const passwordMatched = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatched) {
+        return res.json({
+            errors: [
+                {
+                    msg: "Invalid credentials"
+                }
+            ],
+            data: null
+        })
+    }
+
+    const token = await JWT.sign(
+        { email: user.email },
+        process.env.JWT_SECRET as string,
+        {
+            expiresIn: 360000
+        }
+    )
+
+    return res.json({
+        errors: [],
+        data: {
+            token,
+            user: {
+                id: user._id,
+                email: user.email
+            }
+        }
+    })
+
+})
 
 export default router
