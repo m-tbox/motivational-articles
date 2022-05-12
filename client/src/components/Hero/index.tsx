@@ -9,13 +9,25 @@ const Hero = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [validated, setValidated] = useState(false);
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
+
     const handleSignup = (event: any) => {
         event.preventDefault();
 
         const form = event.currentTarget;
-        
-        if (form.checkValidity() === false && !showLoginModal) {
-            event.preventDefault();
+
+        if (form.checkValidity() === false) {
+
+            if (!password) {
+                setErrorMsg("This field is mandatory");
+            }
+            else if (password.length < 6) {
+                setErrorMsg("Password length should be at least 6 character");
+            }
+
+            setPassword("");
             event.stopPropagation();
         }
         else {
@@ -29,10 +41,16 @@ const Hero = () => {
         event.preventDefault();
 
         const form = event.currentTarget;
+
         
         if (form.checkValidity() === false) {
-            event.preventDefault();
+            if (!password) {
+                setErrorMsg("This field is mandatory");
+            }
+
+            setPassword("");
             event.stopPropagation();
+
         }
         else {
             alert(1);
@@ -70,6 +88,7 @@ const Hero = () => {
                         <Form.Control
                             required
                             type="email"
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <Form.Control.Feedback type="invalid">
                             Please provide valid email
@@ -81,10 +100,12 @@ const Hero = () => {
                         <Form.Label>Password</Form.Label>
                         <Form.Control
                             required
+                            minLength={6}
                             type="password"
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            This field is mandatory
+                            {errorMsg}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Row>
