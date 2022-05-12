@@ -1,0 +1,24 @@
+import axios from "axios";
+import { API_URLS } from "../constants";
+
+export const callLoginApi = async (data: Object) => {
+    const response = await axios.post(API_URLS.login, data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+    });
+
+    return response.data;
+};
+
+export const callSignupApi = async (data: Object) => {
+    const response = await axios.post(API_URLS.signup, data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+    });
+
+    return response.data;
+};

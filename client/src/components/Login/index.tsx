@@ -3,6 +3,9 @@ import { Form, Row, Col } from "react-bootstrap";
 import Button from "../Button"
 import ModalComponent from "../Modal";
 
+import { callLoginApi } from "../../services/api";
+import { ErrorMessage } from "./styles";
+
 type Props = {
     showModal: boolean,
     closeModal: () => void,
@@ -13,9 +16,10 @@ const Login = ({ showModal, closeModal }: Props) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMsg, setErrorMsg] = useState("");
+    const [localErrorMsg, setLocalErrorMsg] = useState("");
+    const [formSubmitErrorMsg, setFormSubmitErrorMsg] = useState("");
 
-    const handleLogin = (event: any) => {
+    const handleLogin = async (event: any) => {
         event.preventDefault();
 
         const form = event.currentTarget;
@@ -23,7 +27,7 @@ const Login = ({ showModal, closeModal }: Props) => {
 
         if (form.checkValidity() === false) {
             if (!password) {
-                setErrorMsg("This field is mandatory");
+                setLocalErrorMsg("This field is mandatory");
             }
 
             setPassword("");
@@ -31,7 +35,14 @@ const Login = ({ showModal, closeModal }: Props) => {
 
         }
         else {
-            alert(1);
+            let loginResponse = await callLoginApi({ email, password });
+            console.log('ssss', loginResponse);
+
+            if (loginResponse?.errors?.length) {
+                setFormSubmitErrorMsg(loginResponse.errors[0].msg);
+                setValidated(true);
+            }
+
         }
 
         setValidated(true);
@@ -41,7 +52,7 @@ const Login = ({ showModal, closeModal }: Props) => {
         setValidated(false);
         setPassword("");
         setEmail("");
-        setErrorMsg("");
+        setLocalErrorMsg("");
 
         closeModal();
     }
@@ -59,6 +70,7 @@ const Login = ({ showModal, closeModal }: Props) => {
                         <Form.Control
                             required
                             type="email"
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -72,13 +84,22 @@ const Login = ({ showModal, closeModal }: Props) => {
                         <Form.Control
                             required
                             type="password"
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+
                         <Form.Control.Feedback type="invalid">
-                            {errorMsg}
+                            {localErrorMsg}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Row>
+
+                {
+                    formSubmitErrorMsg &&
+                    <ErrorMessage>
+                        {formSubmitErrorMsg}
+                    </ErrorMessage>
+                }
 
                 <Row className="mb-3">
                     <Form.Group as={Col} className="d-flex justify-content-end">
