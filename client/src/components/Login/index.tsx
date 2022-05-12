@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Form, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import Button from "../Button"
 import ModalComponent from "../Modal";
 
@@ -19,6 +20,8 @@ const Login = ({ showModal, closeModal }: Props) => {
     const [localErrorMsg, setLocalErrorMsg] = useState("");
     const [formSubmitErrorMsg, setFormSubmitErrorMsg] = useState("");
 
+    const navigate = useNavigate();
+    
     const handleLogin = async (event: any) => {
         event.preventDefault();
 
@@ -41,8 +44,12 @@ const Login = ({ showModal, closeModal }: Props) => {
             if (loginResponse?.errors?.length) {
                 setFormSubmitErrorMsg(loginResponse.errors[0].msg);
                 setValidated(true);
+
+                return;
             }
 
+            localStorage.setItem("token", loginResponse?.data?.token);
+            navigate("/articles")
         }
 
         setValidated(true);

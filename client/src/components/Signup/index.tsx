@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Form, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { callSignupApi } from "../../services/api";
 import Button from "../Button"
 import { ErrorMessage } from "./styles";
@@ -17,6 +18,8 @@ const Signup = ({ showModal, closeModal }: Props) => {
     const [password, setPassword] = useState("");
     const [localErrorMsg, setLocalErrorMsg] = useState("");
     const [formSubmitErrorMsg, setFormSubmitErrorMsg] = useState("");
+
+    const navigate = useNavigate();
 
     const handleSignup = async (event: any) => {
         event.preventDefault();
@@ -43,8 +46,12 @@ const Signup = ({ showModal, closeModal }: Props) => {
             if (signupResponse?.errors?.length) {
                 setFormSubmitErrorMsg(signupResponse.errors[0].msg);
                 setValidated(true);
+
+                return ;
             }
 
+            localStorage.setItem("token", signupResponse?.data?.token);
+            navigate("/articles")
         }
 
         setValidated(true);
@@ -55,6 +62,7 @@ const Signup = ({ showModal, closeModal }: Props) => {
         setPassword("");
         setEmail("");
         setLocalErrorMsg("");
+        setFormSubmitErrorMsg("");
 
         closeModal();
     }

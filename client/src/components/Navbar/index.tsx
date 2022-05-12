@@ -1,12 +1,13 @@
-import { Navbar, NavItem, NavLink } from "react-bootstrap";
+import { Navbar, NavItem } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const Nav = () => {
     return (
         <Navbar>
             <NavItem>
-                <NavLink>
+                <Link to="/" className="nav-link">
                     Home
-                </NavLink>
+                </Link>
             </NavItem>
         </Navbar>
     )
