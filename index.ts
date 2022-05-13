@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from './routes/auth';
+import subscriptionRoutes from './routes/subscription';
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import cors from "cors";
@@ -15,6 +16,7 @@ mongoose.connect('mongodb+srv://mango:d7Emn32s4@articlesapp.ecf1x.mongodb.net/my
         app.use(express.json());
         app.use(cors());
         app.use("/auth", authRoutes);
+        app.use("/subscription", subscriptionRoutes);
 
         app.listen(8080, () => {
             console.log('Now listening')

@@ -5,4 +5,6 @@ body {
     --app-gray: #a1a5a8;
 
     --error-text-color: #DC3444;
+
+    --shadow-color: rgba(19, 20, 19, 0.342);
 }
