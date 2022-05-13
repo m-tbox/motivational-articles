@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { Form, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { callSignupApi, callLoginApi } from "../../services/api";
 import Button from "../Button"
-import ModalComponent from "../Modal";
-
-import { callLoginApi } from "../../services/api";
 import { ErrorMessage } from "./styles";
+import ModalComponent from "../Modal";
 
 type Props = {
     showModal: boolean,
+    signUpFlow?: boolean,
     closeModal: () => void,
+    title: string
 }
 
-const Login = ({ showModal, closeModal }: Props) => {
+const AuthModal = ({ showModal, closeModal, title, signUpFlow }: Props) => {
     const [validated, setValidated] = useState(false);
 
     const [email, setEmail] = useState("");
@@ -21,34 +22,43 @@ const Login = ({ showModal, closeModal }: Props) => {
     const [formSubmitErrorMsg, setFormSubmitErrorMsg] = useState("");
 
     const navigate = useNavigate();
-    
-    const handleLogin = async (event: any) => {
+
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
 
         const form = event.currentTarget;
 
-
         if (form.checkValidity() === false) {
+
             if (!password) {
                 setLocalErrorMsg("This field is mandatory");
+            }
+            else if (password.length < 6) {
+                setLocalErrorMsg("Password length should be at least 6 character");
             }
 
             setPassword("");
             event.stopPropagation();
-
         }
         else {
-            let loginResponse = await callLoginApi({ email, password });
-            console.log('ssss', loginResponse);
+            let apiResponse;
 
-            if (loginResponse?.errors?.length) {
-                setFormSubmitErrorMsg(loginResponse.errors[0].msg);
+            if (signUpFlow) {
+                let signupResponse = await callSignupApi({ email, password });
+                apiResponse = signupResponse;
+            }
+            else {
+                let loginResponse = await callLoginApi({ email, password });
+                apiResponse = loginResponse;
+            }
+
+            if (apiResponse?.errors?.length) {
+                setFormSubmitErrorMsg(apiResponse.errors[0].msg);
                 setValidated(true);
-
                 return;
             }
 
-            localStorage.setItem("token", loginResponse?.data?.token);
+            localStorage.setItem("token", apiResponse?.data?.token);
             navigate("/articles")
         }
 
@@ -60,6 +70,7 @@ const Login = ({ showModal, closeModal }: Props) => {
         setPassword("");
         setEmail("");
         setLocalErrorMsg("");
+        setFormSubmitErrorMsg("");
 
         closeModal();
     }
@@ -68,9 +79,9 @@ const Login = ({ showModal, closeModal }: Props) => {
         <ModalComponent
             showMoal={showModal}
             handleModalHide={handleCloseModal}
-            title={"Login"}
+            title={title}
         >
-            <Form noValidate validated={validated} onSubmit={handleLogin}>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Row className="mb-3">
                     <Form.Group as={Col}>
                         <Form.Label>Email</Form.Label>
@@ -88,13 +99,24 @@ const Login = ({ showModal, closeModal }: Props) => {
                 <Row className="mb-3">
                     <Form.Group as={Col}>
                         <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            required
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
 
+                        {
+                            signUpFlow ?
+                                <Form.Control
+                                    required
+                                    type="password"
+                                    minLength={6}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                :
+                                <Form.Control
+                                    required
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                        }
                         <Form.Control.Feedback type="invalid">
                             {localErrorMsg}
                         </Form.Control.Feedback>
@@ -117,7 +139,7 @@ const Login = ({ showModal, closeModal }: Props) => {
                         />
                         <Button
                             primary
-                            title={"Login"}
+                            title={title}
                             type="submit"
                         />
                     </Form.Group>
@@ -127,4 +149,4 @@ const Login = ({ showModal, closeModal }: Props) => {
     )
 };
 
-export default Login;
+export default AuthModal;
