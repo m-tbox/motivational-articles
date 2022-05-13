@@ -105,7 +105,7 @@ router.post("/login", async (req, res) => {
             data: null
         };
 
-        return res.json()
+        return res.json(resData)
     }
 
     const token = await getAuthToken(user.email);
@@ -121,7 +121,7 @@ router.post("/login", async (req, res) => {
         }
     };
 
-    return res.json()
+    return res.json(resData)
 
 })
 

@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Form, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { callSignupApi, callLoginApi } from "../../services/api";
 import Button from "../Button"
 import { ErrorMessage } from "./styles";
 import ModalComponent from "../Modal";
+import { UserContext } from "../../context";
+import axios from "axios";
 
 type Props = {
     showModal: boolean,
@@ -21,7 +23,11 @@ const AuthModal = ({ showModal, closeModal, title, signUpFlow }: Props) => {
     const [localErrorMsg, setLocalErrorMsg] = useState("");
     const [formSubmitErrorMsg, setFormSubmitErrorMsg] = useState("");
 
+    const [state, setState] = useContext(UserContext);
+
     const navigate = useNavigate();
+
+
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -58,7 +64,17 @@ const AuthModal = ({ showModal, closeModal, title, signUpFlow }: Props) => {
                 return;
             }
 
+            setState({
+                data: {
+                    id: apiResponse?.data?.user.id,
+                    email: apiResponse?.data?.user.email,
+                },
+                loading: false,
+                error: null
+            });
+
             localStorage.setItem("token", apiResponse?.data?.token);
+            axios.defaults.headers.common["authorization"] = `Bearer ${apiResponse?.data?.token}`
             navigate("/articles")
         }
 
