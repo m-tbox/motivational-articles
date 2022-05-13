@@ -36,8 +36,6 @@ const UserProvider = ({ children }: any) => {
     const fetchUser = async () => {
         const response = await callCheckAuthApi();
 
-        console.log(response)
-
         if (response.data && response.data.user) {
             const { id, email } = response.data.user;
             setUser({
@@ -62,7 +60,11 @@ const UserProvider = ({ children }: any) => {
         if (token) {
             fetchUser();
         } else {
-            setUser(INITIAL_STATE)
+            setUser({
+                data: null,
+                loading: false,
+                error: null,
+            });
         }
     }, [])
 
