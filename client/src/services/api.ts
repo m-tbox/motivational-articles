@@ -22,3 +22,9 @@ export const callSignupApi = async (data: Object) => {
 
     return response.data;
 };
+
+export const callCheckAuthApi = async () => {
+    const response = await axios.get(API_URLS.checkAuth);
+
+    return response.data;
+};

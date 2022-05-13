@@ -1,7 +1,13 @@
-import { Navbar, NavItem } from "react-bootstrap";
+import { Navbar, NavItem, NavLink } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../context";
 
 const Nav = () => {
+    const [state, setStates] = useContext(UserContext);
+
+    console.log(state, "NAv");
+
     return (
         <Navbar>
             <NavItem>
@@ -10,11 +16,11 @@ const Nav = () => {
                 </Link>
             </NavItem>
             {
-                localStorage.getItem("token") && (
+                state.data && (
                     <NavItem>
-                        <Link to="/" className="nav-link">
+                        <NavLink>
                             Logout
-                        </Link>
+                        </NavLink>
                     </NavItem>
                 )
             }
