@@ -34,3 +34,15 @@ export const checkAuth = async (req: Request, res: Response, next: NextFunction)
         })
     }
 }
+
+export const getAuthToken = async (userEmail: string) => {
+    const token = await JWT.sign(
+        { email: userEmail },
+        process.env.JWT_SECRET as string,
+        {
+            expiresIn: 360000
+        }
+    )
+
+    return token;
+}

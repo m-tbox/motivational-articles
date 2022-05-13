@@ -2,10 +2,20 @@ import express from "express"
 import { body, validationResult } from "express-validator"
 import User from '../models/users'
 import bcrypt from "bcryptjs"
-import JWT from "jsonwebtoken"
-import { checkAuth } from "../middleware/checkAuth";
+import { checkAuth, getAuthToken } from "../middleware/auth";
 
 const router = express.Router()
+
+interface UserResponse {
+    data: {
+        token?: string
+        user: {
+            id: string,
+            email: string,
+        }
+    } | null;
+    errors: { msg: string }[] | null;
+}
 
 router.post('/signup',
     body("email").isEmail().withMessage("The email is invalid"),
@@ -21,7 +31,8 @@ router.post('/signup',
                 }
             });
 
-            return res.json({ errors, data: null });
+            const resData: UserResponse = { errors, data: null }
+            return res.json(resData);
         }
 
         const { email, password } = req.body;
@@ -29,14 +40,16 @@ router.post('/signup',
         const user = await User.findOne({ email })
 
         if (user) {
-            return res.json({
+            const resData: UserResponse = {
                 errors: [
                     {
                         msg: "Email already exist",
                     },
                 ],
                 data: null
-            });
+            };
+
+            return res.json(resData);
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
@@ -45,15 +58,9 @@ router.post('/signup',
             password: hashedPassword
         })
 
-        const token = await JWT.sign(
-            { email: newUser.email },
-            process.env.JWT_SECRET as string,
-            {
-                expiresIn: 360000
-            }
-        )
+        const token = await getAuthToken(newUser.email);
 
-        res.json({
+        const resData: UserResponse = {
             errors: [],
             data: {
                 token,
@@ -62,7 +69,9 @@ router.post('/signup',
                     email: newUser.email
                 }
             }
-        })
+        };
+
+        res.json(resData)
     });
 
 
@@ -72,38 +81,36 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-        return res.json({
+        const resData: UserResponse = {
             errors: [
                 {
                     msg: "Invalid credentials"
                 }
             ],
             data: null
-        })
+        };
+
+        return res.json(resData)
     }
 
     const passwordMatched = await bcrypt.compare(password, user.password);
 
     if (!passwordMatched) {
-        return res.json({
+        const resData: UserResponse = {
             errors: [
                 {
                     msg: "Invalid credentials"
                 }
             ],
             data: null
-        })
+        };
+
+        return res.json()
     }
 
-    const token = await JWT.sign(
-        { email: user.email },
-        process.env.JWT_SECRET as string,
-        {
-            expiresIn: 360000
-        }
-    )
+    const token = await getAuthToken(user.email);
 
-    return res.json({
+    const resData: UserResponse = {
         errors: [],
         data: {
             token,
@@ -112,14 +119,16 @@ router.post("/login", async (req, res) => {
                 email: user.email
             }
         }
-    })
+    };
+
+    return res.json()
 
 })
 
-router.get("/me", checkAuth, async (req, res) => {
+router.get("/checkAuth", checkAuth, async (req, res) => {
     const user = await User.findOne({ email: req.user });
 
-    return res.json({
+    const resData: UserResponse = {
         errors: [],
         data: {
             user: {
@@ -127,7 +136,9 @@ router.get("/me", checkAuth, async (req, res) => {
                 email: user.email
             }
         }
-    })
+    };
+
+    return res.json(resData)
 });
 
 
