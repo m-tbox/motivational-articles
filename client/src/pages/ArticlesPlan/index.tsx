@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 // import { Card } from "react-bootstrap";
-import { API_URLS } from "../../constants";
+import { API_URLS, PRODUCT_DESCRIPTON } from "../../constants";
 import {
     CardContainer,
     Card,
@@ -35,19 +35,18 @@ const ArticlesPlan = ({ }: Props) => {
     //     Premium: "pink",
     // };
 
-    const backgroundColors: any = {
-        Basic: "linear-gradient(45deg, rgba(87,196,162,1) 0%, rgba(102,231,191,1) 20%, rgba(122,215,186,1) 82%)",
-        Standard: "linear-gradient(45deg, rgba(122,137,217,1) 0%, rgba(157,170,242,1) 20%, rgba(192,199,240,1) 82%);",
-        Premium: "linear-gradient(45deg, rgba(236,89,37,1) 0%, rgba(241,127,47,1) 20%, rgba(241,171,48,1) 82%); ",
-    };
-
     return (
         <CardContainer>
             {
-                prices.map((price: any) =>
-                    <Card>
-                        <CardHeader background={backgroundColors[price.nickname]}>
-                            <PriceCircle>
+                prices.map((price: any, index: number) =>
+                    <Card
+                        key={index}
+                        plan={price.nickname}
+                    >
+                        <CardHeader>
+                            <PriceCircle
+                                plan={price.nickname}
+                            >
                                 <PriceText> ${price.unit_amount / 100}</PriceText>
                             </PriceCircle>
                         </CardHeader>
@@ -56,6 +55,17 @@ const ArticlesPlan = ({ }: Props) => {
                             <CardTitle>
                                 {price.nickname}
                             </CardTitle>
+
+                            <ul>
+                                {
+                                    PRODUCT_DESCRIPTON[price.nickname]?.map((descripton, index) =>
+                                        <li key={index}>
+                                            {descripton}
+                                        </li>
+                                    )
+                                }
+                            </ul>
+
 
                             <Button
                                 title="Buy now"

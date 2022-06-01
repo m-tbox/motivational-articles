@@ -2,7 +2,8 @@ import express from "express"
 import { body, validationResult } from "express-validator"
 import User from '../models/users'
 import bcrypt from "bcryptjs"
-import { checkAuth, getAuthToken } from "../middleware/auth";
+import { checkAuth, getAuthToken } from "../middleware/auth"
+import { stripe } from "../utils/stripe"
 
 const router = express.Router()
 
@@ -12,6 +13,7 @@ interface UserResponse {
         user: {
             id: string,
             email: string,
+            customerStripeId: string
         }
     } | null;
     errors: { msg: string }[] | null;
@@ -53,9 +55,20 @@ router.post('/signup',
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
+
+        const customer = await stripe.customers.create(
+            {
+                email
+            },
+            {
+                apiKey: process.env.STRIPE_SECRET_KEY
+            }
+        )
+
         const newUser = await User.create({
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            customerStripeId: customer.id
         })
 
         const token = await getAuthToken(newUser.email);
@@ -66,7 +79,8 @@ router.post('/signup',
                 token,
                 user: {
                     id: newUser._id,
-                    email: newUser.email
+                    email: newUser.email,
+                    customerStripeId: customer.id
                 }
             }
         };
@@ -116,7 +130,8 @@ router.post("/login", async (req, res) => {
             token,
             user: {
                 id: user._id,
-                email: user.email
+                email: user.email,
+                customerStripeId: user.customerStripeId
             }
         }
     };
@@ -133,7 +148,8 @@ router.get("/checkAuth", checkAuth, async (req, res) => {
         data: {
             user: {
                 id: user._id,
-                email: user.email
+                email: user.email,
+                customerStripeId: user.customerStripeId
             }
         }
     };

@@ -68,6 +68,7 @@ const AuthModal = ({ showModal, closeModal, title, signUpFlow }: Props) => {
                 data: {
                     id: apiResponse?.data?.user.id,
                     email: apiResponse?.data?.user.email,
+                    customerStripeId: apiResponse?.data?.user.customerStripeId
                 },
                 loading: false,
                 error: null
@@ -153,11 +154,14 @@ const AuthModal = ({ showModal, closeModal, title, signUpFlow }: Props) => {
                             onClick={handleCloseModal}
                             type="button"
                         />
-                        <Button
-                            primary
-                            title={title}
-                            type="submit"
-                        />
+
+                        <span className="mx-3">
+                            <Button
+                                primary
+                                title={title}
+                                type="submit"
+                            />
+                        </span>
                     </Form.Group>
                 </Row>
             </Form>

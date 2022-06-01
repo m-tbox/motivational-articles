@@ -5,7 +5,8 @@ import { callCheckAuthApi } from "../services/api";
 interface User {
     data: {
         id: string,
-        email: string
+        email: string,
+        customerStripeId: string
     } | null;
     error: string | null;
     loading: boolean;
@@ -37,11 +38,12 @@ const UserProvider = ({ children }: any) => {
         const response = await callCheckAuthApi();
 
         if (response.data && response.data.user) {
-            const { id, email } = response.data.user;
+            const { id, email, customerStripeId } = response.data.user;
             setUser({
                 data: {
                     id,
-                    email
+                    email,
+                    customerStripeId: customerStripeId
                 },
                 loading: false,
                 error: null

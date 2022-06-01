@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { HeaderContainer, Heading, MainContainer, SubHeading } from "./styles";
+import {
+    HeaderContainer,
+    Heading,
+    MainContainer,
+    SubHeading
+} from "./styles";
 import { Container } from "react-bootstrap";
 import Button from "../Button"
 import AuthModal from "../AuthModal";
@@ -43,11 +48,14 @@ const Hero = () => {
                         signUpFlow={true}
                     />
 
-                    <Button
-                        title={'Login'}
-                        onClick={openLoginModal}
-                        primary
-                    />
+
+                    <span className="mx-3">
+                        <Button
+                            title={'Login'}
+                            onClick={openLoginModal}
+                            primary
+                        />
+                    </span>
 
                     <AuthModal
                         showModal={showLoginModal}
