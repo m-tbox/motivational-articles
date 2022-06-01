@@ -13,7 +13,7 @@ interface UserResponse {
         user: {
             id: string,
             email: string,
-            customerStripeId: string
+            stripeCustomerId: string
         }
     } | null;
     errors: { msg: string }[] | null;
@@ -68,7 +68,7 @@ router.post('/signup',
         const newUser = await User.create({
             email,
             password: hashedPassword,
-            customerStripeId: customer.id
+            stripeCustomerId: customer.id
         })
 
         const token = await getAuthToken(newUser.email);
@@ -80,7 +80,7 @@ router.post('/signup',
                 user: {
                     id: newUser._id,
                     email: newUser.email,
-                    customerStripeId: customer.id
+                    stripeCustomerId: customer.id
                 }
             }
         };
@@ -131,7 +131,7 @@ router.post("/login", async (req, res) => {
             user: {
                 id: user._id,
                 email: user.email,
-                customerStripeId: user.customerStripeId
+                stripeCustomerId: user.stripeCustomerId
             }
         }
     };
@@ -149,7 +149,7 @@ router.get("/checkAuth", checkAuth, async (req, res) => {
             user: {
                 id: user._id,
                 email: user.email,
-                customerStripeId: user.customerStripeId
+                stripeCustomerId: user.stripeCustomerId
             }
         }
     };

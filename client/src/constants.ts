@@ -16,6 +16,7 @@ export const API_URLS = {
     checkAuth: `${BASE_URL}/auth/checkAuth`,
     subscriptionPrices: `${BASE_URL}/subscription/prices`,
     subscriptionSession: `${BASE_URL}/subscription/session`,
+    getArticles: `${BASE_URL}/articles`,
 }
 
 export const SUBSCRIPTION_CARD_COLORS: SubscriptionCard = {

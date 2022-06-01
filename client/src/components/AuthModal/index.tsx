@@ -68,7 +68,7 @@ const AuthModal = ({ showModal, closeModal, title, signUpFlow }: Props) => {
                 data: {
                     id: apiResponse?.data?.user.id,
                     email: apiResponse?.data?.user.email,
-                    customerStripeId: apiResponse?.data?.user.customerStripeId
+                    stripeCustomerId: apiResponse?.data?.user.stripeCustomerId
                 },
                 loading: false,
                 error: null

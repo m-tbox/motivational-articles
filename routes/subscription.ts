@@ -26,7 +26,7 @@ router.post("/session", checkAuth, async (req, res) => {
         }],
         success_url: `${CLIENT_BASE_URL}/articles`,
         cancel_url: `${CLIENT_BASE_URL}/article-plans`,
-        customer: user.customerStripeId
+        customer: user.stripeCustomerId
     }, {
         apiKey: process.env.STRIPE_SECRET_KEY
     })

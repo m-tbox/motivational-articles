@@ -28,3 +28,9 @@ export const callCheckAuthApi = async () => {
 
     return response.data;
 };
+
+export const callGetArticlesApi = async () => {
+    const response = await axios.get(API_URLS.getArticles);
+
+    return response.data;
+};

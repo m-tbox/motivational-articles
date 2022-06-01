@@ -6,7 +6,7 @@ interface User {
     data: {
         id: string,
         email: string,
-        customerStripeId: string
+        stripeCustomerId: string
     } | null;
     error: string | null;
     loading: boolean;
@@ -38,12 +38,12 @@ const UserProvider = ({ children }: any) => {
         const response = await callCheckAuthApi();
 
         if (response.data && response.data.user) {
-            const { id, email, customerStripeId } = response.data.user;
+            const { id, email, stripeCustomerId } = response.data.user;
             setUser({
                 data: {
                     id,
                     email,
-                    customerStripeId: customerStripeId
+                    stripeCustomerId: stripeCustomerId
                 },
                 loading: false,
                 error: null
