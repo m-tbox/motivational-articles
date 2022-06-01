@@ -29,11 +29,16 @@ const ArticlesPlan = ({ }: Props) => {
         setPrices(response.data);
     }
 
-    // const backgroundColors: any = {
-    //     Basic: "rgb(104, 219, 104)",
-    //     Standard: "rgb(185, 42, 23, 0.835)",
-    //     Premium: "pink",
-    // };
+    const createSession = async (priceId: string) => {
+        const { data: response } = await axios.post(API_URLS.subscriptionSession,
+            {
+                priceId
+            }
+        )
+
+        window.location.href = response.url
+
+    }
 
     return (
         <CardContainer>
@@ -70,6 +75,7 @@ const ArticlesPlan = ({ }: Props) => {
                             <Button
                                 title="Buy now"
                                 primary
+                                onClick={() => createSession(price.id)}
                             />
 
                         </CardBody>
