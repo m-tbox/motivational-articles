@@ -1,8 +1,8 @@
 import express from "express"
 import User from '../models/users'
-import { checkAuth } from "../middleware/auth";
-import { stripe } from "../utils/stripe";
-import { CLIENT_BASE_URL } from "../constants";
+import { checkAuth } from "../middleware/auth"
+import { stripe } from "../utils/stripe"
+import { CLIENT_BASE_URL } from "../constants"
 
 const router = express.Router()
 
