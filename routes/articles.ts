@@ -45,4 +45,16 @@ router.get("/", checkAuth, async (req, res) => {
     }
 })
 
+router.get("/:id", checkAuth, async (req, res) => {
+    const articleId = req.params.id
+
+    try {
+        const article : any = await Article.findById(articleId)
+        return res.json(article)
+
+    } catch (error) {
+        return res.json(error)
+    }
+})
+
 export default router

@@ -34,3 +34,9 @@ export const callGetArticlesApi = async () => {
 
     return response.data;
 };
+
+export const callGetArticleByIdApi = async (id: string) => {
+    const response = await axios.get(`${API_URLS.getArticles}/${id}`);
+
+    return response.data;
+};

@@ -1,10 +1,19 @@
+import { useContext } from 'react';
 import Hero from '../../components/Hero'
+import { UserContext } from '../../context';
+import Articles from '../Articles';
 
-type Props = {}
+const LandingPage = () => {
+  const [state, setState] = useContext(UserContext);
 
-function LandingPage({ }: Props) {
   return (
-    <Hero />
+    <>
+      {
+        state.data ?
+          <Articles /> :
+          <Hero />
+      }
+    </>
   )
 }
 

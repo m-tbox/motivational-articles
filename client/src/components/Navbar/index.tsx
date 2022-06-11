@@ -1,8 +1,13 @@
-import { Navbar, NavItem, NavLink } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { NavItem } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context";
-import { LeftNavContainer } from "./styles";
+import {
+    LeftNavContainer,
+    Navbar,
+    RouteLink,
+    NavLink
+} from "./styles";
 
 const Nav = () => {
     const [state, setState] = useContext(UserContext);
@@ -21,24 +26,27 @@ const Nav = () => {
     }
 
     return (
-        <Navbar>
-            <NavItem>
-                <Link to="/" className="nav-link">
-                    Home
-                </Link>
-            </NavItem>
+        <>
             {
                 state.data && (
-                    <LeftNavContainer>
+                    <Navbar>
                         <NavItem>
-                            <NavLink onClick={handleLogout}>
-                                Logout
-                            </NavLink>
+                            <RouteLink to="/articles" className="nav-link">
+                                Home
+                            </RouteLink>
+
                         </NavItem>
-                    </LeftNavContainer>
+                        <LeftNavContainer>
+                            <NavItem>
+                                <NavLink onClick={handleLogout}>
+                                    Logout
+                                </NavLink>
+                            </NavItem>
+                        </LeftNavContainer>
+                    </Navbar>
                 )
             }
-        </Navbar>
+        </>
     )
 };
 

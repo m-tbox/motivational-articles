@@ -2,6 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
+import ArticleDetail from './pages/ArticleDetail';
 import Articles from './pages/Articles';
 import ArticlesPlan from './pages/ArticlesPlan';
 import LandingPage from './pages/LandingPage';
@@ -21,6 +22,11 @@ function App() {
         <Route path="/article-plans" element={<ProtectedRoute />}>
           <Route path="/article-plans" element={<ArticlesPlan />} />
         </Route>
+
+        <Route path="/article-detail" element={<ProtectedRoute />}>
+          <Route path="/article-detail/:id" element={<ArticleDetail />} />
+        </Route>
+
       </Routes>
     </Router>
   );
