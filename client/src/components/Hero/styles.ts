@@ -18,10 +18,11 @@ export const HeaderContainer = styled.div`
 `
 
 export const Heading = styled.h1`
-   /* color: pink; */
+   font-size: 2rem;
 `
 
 export const SubHeading = styled.h5`
     margin: 1rem 0;
     font-weight: 400;
+    font-size: 1.25rem;
 `
